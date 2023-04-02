@@ -1,19 +1,31 @@
 import React, { useState } from "react";
-import { List } from "../App";
+import { List, deleteItems, editItems } from "../redux/modules/itemSlice";
+import { useDispatch } from "react-redux";
 
-type itemProps = {
+type ItemProps = {
   item: List;
 };
 
-const Item = ({ item }: itemProps): JSX.Element => {
+const Item = ({ item }: ItemProps): JSX.Element => {
   const [edit, setEdit] = useState<boolean>(false);
   const [editTitle, setEditTitle] = useState<string>(`${item.title}`);
   const [editDesc, setEditDesc] = useState<string>(`${item.desc}`);
+  const dispatch = useDispatch();
   const editButtonHandler = () => {
     setEdit((pre) => !pre);
   };
-  const editItemHandler = () => {};
-  const deleteItemHandler = () => {};
+  const editItemHandler = () => {
+    const editItem = {
+      id: item.id,
+      title: editTitle,
+      desc: editDesc,
+    };
+    dispatch(editItems(editItem));
+    setEdit((pre) => !pre);
+  };
+  const deleteItemHandler = (id: number) => {
+    dispatch(deleteItems(id));
+  };
 
   const titleChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditTitle(e.target.value);
@@ -25,7 +37,7 @@ const Item = ({ item }: itemProps): JSX.Element => {
   return (
     <>
       {edit ? (
-        <div>
+        <div key={item.id}>
           <input type="text" value={editTitle} onChange={titleChangeHandler} />
           <input type="text" value={editDesc} onChange={descChangeHandler} />
           <button
@@ -38,20 +50,20 @@ const Item = ({ item }: itemProps): JSX.Element => {
           <button onClick={() => editButtonHandler()}>취소</button>
           <button
             onClick={() => {
-              deleteItemHandler();
+              deleteItemHandler(item.id);
             }}
           >
             삭제
           </button>
         </div>
       ) : (
-        <div>
+        <div key={item.id}>
           <p>제목:{item.title}</p>
           <p>할일:{item.desc}</p>
           <button onClick={() => editButtonHandler()}>수정</button>
           <button
             onClick={() => {
-              deleteItemHandler();
+              deleteItemHandler(item.id);
             }}
           >
             삭제

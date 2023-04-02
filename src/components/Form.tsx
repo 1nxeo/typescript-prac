@@ -1,20 +1,23 @@
 import React, { useState } from "react";
-import { List } from "../App";
+import { useDispatch, useSelector } from "react-redux";
+import { addItems } from "../redux/modules/itemSlice";
+import { RootState } from "../redux/config/configStore";
+import { List } from "../redux/modules/itemSlice";
 
 const Form = (): JSX.Element => {
-  const [list, setList] = useState<List[]>([]);
+  const dispatch = useDispatch();
+  const items = useSelector((store: RootState) => store.items);
   const [title, setTitle] = useState<string>();
   const [desc, setDesc] = useState<string>();
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newItem = {
-      id: list.length + 1,
+    const newItem: List = {
+      id: items.length + 1,
       title,
       desc,
     };
-    const newList = [...list, newItem];
-    setList(newList);
+    dispatch(addItems(newItem));
     setTitle("");
     setDesc("");
     alert(`제목:${title}, 할일:${desc}`);
