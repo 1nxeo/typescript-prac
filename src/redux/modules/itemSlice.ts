@@ -6,7 +6,7 @@ export type List = {
   desc: string | undefined;
 };
 
-const initialState: List[] = [{ id: 1, title: "타스", desc: "개어려움" }];
+const initialState: List[] = [];
 
 const itemSlice = createSlice({
   name: "items",
