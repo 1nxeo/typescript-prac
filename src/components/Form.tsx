@@ -1,16 +1,23 @@
-import React from 'react'
+import React from "react";
 
-const Form = ():JSX.Element => {
+const Form = (): JSX.Element => {
   return (
     <>
-    <form>
-        <label> 제목<input type="text" /></label>
-        <label> 할일<input type="text" /></label>
+      <form>
+        <label>
+          {" "}
+          제목
+          <input type="text" />
+        </label>
+        <label>
+          {" "}
+          할일
+          <input type="text" />
+        </label>
         <button>작성하기</button>
-    </form>
-   
+      </form>
     </>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;

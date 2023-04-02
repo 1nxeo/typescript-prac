@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const Header = ():JSX.Element => {
-  return (
-    <div>Header</div>
-  )
-}
+const Header = (): JSX.Element => {
+  return <div>Header</div>;
+};
 
-
-
-export default Header
+export default Header;
