@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { List, deleteItems, editItems } from "../redux/modules/itemSlice";
 import { useDispatch } from "react-redux";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 type ItemProps = {
   item: List;
@@ -14,17 +16,39 @@ const Item = ({ item }: ItemProps): JSX.Element => {
   const editButtonHandler = () => {
     setEdit((pre) => !pre);
   };
-  const editItemHandler = () => {
-    const editItem = {
-      id: item.id,
+  const queryClient = useQueryClient();
+
+  const editItems = useMutation({
+    mutationFn: async (payload: List) => {
+      await axios.patch(`http://localhost:4000/items/${payload.id}`, payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["GET_TODOS"]);
+    },
+  });
+
+  const deleteItems = useMutation({
+    mutationFn: async (payload: number) => {
+      await axios.delete(`http://localhost:4000/items/${payload}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["GET_TODOS"]);
+    },
+  });
+
+  const editItemHandler = (id: number) => {
+    const editItem: List = {
+      id,
       title: editTitle,
       desc: editDesc,
     };
-    dispatch(editItems(editItem));
+    editItems.mutate(editItem);
+    // dispatch(editItems(editItem));
     setEdit((pre) => !pre);
   };
   const deleteItemHandler = (id: number) => {
-    dispatch(deleteItems(id));
+    deleteItems.mutate(id);
+    // dispatch(deleteItems(id));
   };
 
   const titleChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +66,7 @@ const Item = ({ item }: ItemProps): JSX.Element => {
           <input type="text" value={editDesc} onChange={descChangeHandler} />
           <button
             onClick={() => {
-              editItemHandler();
+              editItemHandler(item.id);
             }}
           >
             수정완료

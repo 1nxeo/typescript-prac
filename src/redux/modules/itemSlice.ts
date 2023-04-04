@@ -2,8 +2,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export type List = {
   id: number;
-  title: string | undefined;
-  desc: string | undefined;
+  title?: string;
+  desc?: string;
 };
 
 const initialState: List[] = [];

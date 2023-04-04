@@ -2,20 +2,33 @@ import React from "react";
 import Item from "../components/Item";
 import Form from "../components/Form";
 import { List } from "../redux/modules/itemSlice";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/config/configStore";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import Layout from "../components/Layout";
 
 const Home = (): JSX.Element => {
-  const items = useSelector((store: RootState) => store.items);
+  const { data } = useQuery({
+    queryKey: ["GET_TODOS"],
+    queryFn: async () => {
+      const data = await axios.get("http://localhost:4000/items");
 
-  console.log("items", items);
+      return data.data;
+    },
+  });
+
+  if (!data) {
+    return <div>로딩중</div>;
+  }
+
   return (
     <>
-      <h1>또두리스트</h1>
-      <Form />
-      {items.map((item: List) => (
-        <Item key={item.id} item={item} />
-      ))}
+      <Layout>
+        <h1>또두리스트</h1>
+        <Form />
+        {data.map((item: List) => (
+          <Item key={item.id} item={item} />
+        ))}
+      </Layout>
     </>
   );
 };
